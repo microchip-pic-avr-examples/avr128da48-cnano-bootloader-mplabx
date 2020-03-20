@@ -1,21 +1,34 @@
 pipeline {
     agent {
         kubernetes {
-            label 'avr128da48-3bit-ring-counter-start-example'
-			defaultContainer 'debian'
+            label 'pic16f18446-curiosity-nano-board-gas-leak-detector'
+			defaultContainer 'xc8-mplabx'
             yamlFile 'cloudprovider.yml'
         }
     }
 
     parameters {
         string( name: 'NOTIFICATION_EMAIL',
-                defaultValue:  'PICAVR_Examples_GateKeepers@microchip.com',
+                defaultValue:  'Marc.McComb@microchip.com, \
+                                Mamun.Ahmed@microchip.com, \
+                                stephen.cowden@microchip.com, \
+                                michael.pearce@microchip.com, \
+                                Vinaya.Skanda@Microchip.com, \
+                                Johan.Lofstad@microchip.com, \
+                                Espen.Krangnes@microchip.com, \
+                                Catalina.Costin@microchip.com, \
+                                Namrata.Dalvi@microchip.com, \
+                                Martin.Thomaz@microchip.com, \
+                                Marius.Nicolae@microchip.com, \
+                                Cristian.Pop@microchip.com, \
+                                shaima.husain@microchip.com, \
+                                prasad.aradhya@microchip.com',
                 description: "Email to send build failure, fixed and successful deployment notifications.")
     }
 	
 	environment {		
-		GITHUB_URL ='https://github.com/microchip-pic-avr-examples/avr128da48-cnano-bootloaders-for-avr-da-family-mplabx.git'
-		BITBUCKET_URL = 'https://bitbucket.microchip.com/scm/ebe/avr128da48-cnano-bootloaders-for-avr-da-family-mplabx.git'
+		GITHUB_URL ='https://github.com/microchip-pic-avr-examples/pic16f18446-curiosity-nano-board-gas-leak-detector.git'
+		BITBUCKET_URL = 'https://bitbucket.microchip.com/scm/ebe/pic16f18446-curiosity-nano-board-gas-leak-detector.git'
 		DEPLOY_TOOL_URL = 'https://bitbucket.microchip.com/scm/citd/tool-github-deploy.git'
 		DEPLOY_SCRIPT_DIR = 'tool-github-deploy'
 		DEPLOY_SCRIPT_FILE = 'deploy-source-as-is.sh'
@@ -33,7 +46,15 @@ pipeline {
             }
         }
 
-		
+		stage('Build') {
+            steps {
+				script {
+					execute("git clone https://bitbucket.microchip.com/scm/citd/tool-mplabx-c-build.git")						
+					execute("cd tool-mplabx-c-build && node buildLauncher.js sp=../ rp=./output genMK=true")		 
+				}
+            }
+        }	
+
         stage('Deploy') {
 			when {
 				not { 
@@ -48,7 +69,7 @@ pipeline {
 					execute("git clone ${env.DEPLOY_TOOL_URL}")		
 					
 					withCredentials([usernamePassword(credentialsId: '8bit-examples.github.com', usernameVariable: 'USER_NAME', passwordVariable:'USER_PASS' )]) {					
-						execute("cd ${env.DEPLOY_SCRIPT_DIR} && bash ${env.DEPLOY_SCRIPT_FILE} ${env.BITBUCKET_URL} ${env.GITHUB_URL} ${USER_NAME} ${USER_PASS}")	
+						execute("cd ${env.DEPLOY_SCRIPT_DIR} && bash ${env.DEPLOY_SCRIPT_FILE} ${env.BITBUCKET_URL} ${env.GITHUB_URL} ${USER_NAME} ${USER_PASS} '--tag ${env.TAG_NAME}'")	
 					}	
 
                     sendSuccessfulGithubDeploymentEmail()					
