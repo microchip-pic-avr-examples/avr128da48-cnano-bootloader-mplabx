@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            label 'pic16f18446-curiosity-nano-board-gas-leak-detector'
+            label 'avr128da48-cnano-bootloaders-for-avr-da-family-mplabx'
 			defaultContainer 'xc8-mplabx'
             yamlFile 'cloudprovider.yml'
         }
@@ -27,8 +27,8 @@ pipeline {
     }
 	
 	environment {		
-		GITHUB_URL ='https://github.com/microchip-pic-avr-examples/pic16f18446-curiosity-nano-board-gas-leak-detector.git'
-		BITBUCKET_URL = 'https://bitbucket.microchip.com/scm/ebe/pic16f18446-curiosity-nano-board-gas-leak-detector.git'
+		GITHUB_URL ='https://github.com/microchip-pic-avr-examples/avr128da48-cnano-bootloaders-for-avr-da-family-mplabx.git'
+		BITBUCKET_URL = 'https://bitbucket.microchip.com/scm/ebe/avr128da48-cnano-bootloaders-for-avr-da-family-mplabx.git'
 		DEPLOY_TOOL_URL = 'https://bitbucket.microchip.com/scm/citd/tool-github-deploy.git'
 		DEPLOY_SCRIPT_DIR = 'tool-github-deploy'
 		DEPLOY_SCRIPT_FILE = 'deploy-source-as-is.sh'
