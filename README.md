@@ -8,7 +8,7 @@ This repository contains the MPLAB X projects for a basic bootloader compatible 
 ## Related Documentation
 More details and code examples on the AVR128DA48 can be found at the following links:
 - [AN3341 - Basic Bootloader for the AVR MCU DA (AVR-DA) Family](https://www.microchip.com/wwwappnotes/appnotes.aspx?appnote=en1001654)
-- [AVR128DA48 Product Page](https://www.microchip.com/wwwproducts/en/AVR128DA28)
+- [AVR128DA48 Product Page](https://www.microchip.com/wwwproducts/en/AVR128DA48)
 - [AVR128DA48 Code Examples on GitHub](https://github.com/microchip-pic-avr-examples?q=avr128da48)
 - [AVR128DA48 Project Examples in START](https://start.atmel.com/#examples/AVR128DA48CuriosityNano)
 
