@@ -32,7 +32,7 @@ The AVR128DA48 Curiosity Nano Development Board is used as test platform.
 In order to upload the application image follow this steps:
 1. Connect the board to the PC.
 
-2. Check the COM port the AVR128DA48 Curiosity Nano was connected to by opening *Device Manager* in Windows:
+2. Check the COM port the AVR128DA48 Curiosity Nano was connected to by opening *Device Manager* in Windows®:
 <br><img src="images/AVR-DA_Bootloader_COM_port.png" width="500">
 
 3. Open in MPLAB X the two projects:
