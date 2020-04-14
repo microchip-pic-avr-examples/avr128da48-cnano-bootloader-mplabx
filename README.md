@@ -75,4 +75,4 @@ Example:
 11. Run *SerialUpload.bat*
 
 ## Summary
-This *AN3341 - Basic Bootloader for the AVR MCU DA (AVR-DA) Family* application note describes how the AVR® MCU DA (AVR-DA) family of microcontrollers (MCUs) can use self-programming. This enables the user to download application code into Flash without the need for an external programmer.
+This [*AN3341 - Basic Bootloader for the AVR MCU DA (AVR-DA) Family*](https://www.microchip.com/wwwappnotes/appnotes.aspx?appnote=en1001654) application note describes how the AVR® MCU DA (AVR-DA) family of microcontrollers (MCUs) can use self-programming. This enables the user to download application code into Flash without the need for an external programmer.
