@@ -31,14 +31,16 @@
         <targetDevice>AVR128DA48</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool></platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>AVR</languageToolchain>
         <languageToolchainVersion>5.4.0</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="AVR-Dx_DFP" vendor="Microchip" version="1.0.18"/>
+        <pack name="AVR-Dx_DFP" vendor="Microchip" version="1.10.124"/>
       </packs>
+      <ScriptingSettings>
+      </ScriptingSettings>
       <compileType>
         <linkerTool>
           <linkerLibItems>
@@ -56,6 +58,7 @@
       </compileType>
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeUseCleanTarget>false</makeUseCleanTarget>
         <makeCustomizationPreStep></makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
         <makeCustomizationPostStep></makeCustomizationPostStep>
@@ -149,12 +152,12 @@
         <property key="eeprom-segment" value=""/>
         <property key="exclude-standard-libraries" value="false"/>
         <property key="extra-lib-directories" value=""/>
-        <property key="flash-segment" value=".text=0x200"/>
+        <property key="flash-segment" value=".text=0x2000"/>
         <property key="generate-map-file" value="true"/>
         <property key="initial-stack-address" value=""/>
         <property key="input-libraries" value="libm;libm"/>
         <property key="no-default-libs" value="false"/>
-        <property key="no-shared-libraries" value="false"/>
+        <property key="no-shared-libraries" value="true"/>
         <property key="no-startup-files" value="false"/>
         <property key="omit-symbol-information" value="false"/>
         <property key="other-options" value=""/>

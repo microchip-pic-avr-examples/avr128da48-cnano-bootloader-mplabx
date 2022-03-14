@@ -22,7 +22,7 @@
  *
  */
 
-#define F_CPU       (4000000UL)         /* using default clock 4MHz*/
+#define F_CPU       (24000000UL)         /* using default clock 4MHz*/
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -44,11 +44,11 @@ int main(void)
 static inline void STATUS_LED_init(void)
 {
     /* Set LED0 (PC6) as output */
-    VPORTC.DIR |= PIN6_bm;
+    VPORTF.DIR |= PIN2_bm;
 }
 
 static inline void STATUS_LED_toggle(void)
 {
     /* Toggle LED0 (PC6) */
-    VPORTC.OUT ^= PIN6_bm;
+    VPORTF.OUT ^= PIN2_bm;
 }

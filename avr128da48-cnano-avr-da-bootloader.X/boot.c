@@ -22,8 +22,9 @@
  *
  */
 
-#define F_CPU                           (4000000UL)         /* using default clock 4MHz*/
-#define USART1_BAUD_RATE(BAUD_RATE)     ((float)(64 * F_CPU / (16 * (float)BAUD_RATE)) + 0.5)
+#define F_CPU                           (4000000UL)         /* using clock 4MHz*/
+#define UART_BAUD_RATE					(19200UL)
+#define USART0_BAUD_RATE(BAUD_RATE)     ((float)(64 * F_CPU / (16 * (float)BAUD_RATE)) + 0.5)
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -42,14 +43,16 @@
 /* Fuse configuration
  * BOOTSIZE sets the size (end) of the boot section in blocks of 512 bytes.
  * CODESIZE = 0x00 defines the section from BOOTSIZE*512 to end of Flash as application code.
- * Remaining fuses have default configuration.
+ * Remaining fuses have configuration that the app depends on.
  */
 FUSES = {
-    .OSCCFG = CLKSEL_OSCHF_gc,
-    .SYSCFG0 = CRCSRC_NOCRC_gc | RSTPINCFG_GPIO_gc,
-    .SYSCFG1 = SUT_64MS_gc,
-    .CODESIZE = 0x00,
-    .BOOTSIZE = BOOTSIZE_FUSE
+	.BODCFG = ACTIVE_DISABLE_gc | LVL_BODLEVEL0_gc | SAMPFREQ_128Hz_gc | SLEEP_DISABLE_gc,
+	.BOOTSIZE = BOOTSIZE_FUSE,
+	.CODESIZE = 0,
+	.OSCCFG = CLKSEL_OSCHF_gc,
+	.SYSCFG0 = CRCSEL_CRC16_gc | CRCSRC_NOCRC_gc | RSTPINCFG_GPIO_gc,
+	.SYSCFG1 = SUT_0MS_gc,
+	.WDTCFG = PERIOD_OFF_gc | WINDOW_OFF_gc,
 };
 
 typedef enum
@@ -81,6 +84,9 @@ static inline void STATUS_LED_toggle(void);
 static inline void STATUS_LED_set(void);
 static inline void STATUS_LED_clear(void);
 static uint8_t BUTTON_read(void);
+static inline void RS485_TXEN_init(void);
+static inline void RS485_TXEN_set(void);
+static inline void RS485_TXEN_clear(void);
 
 /* Bootloader function */
 void bootloader(void);
@@ -120,7 +126,7 @@ void bootloader(void)
 
     /* Initialize communication interface */
     INTERFACE_init();
-    
+    RS485_TXEN_init();
     boot_state = READ_START_MARK;
     
     while (1)
@@ -261,35 +267,61 @@ void bootloader(void)
  */
 static void USART_init(void)
 {
-    VPORTC.DIR &= ~PIN1_bm;                                 /* set pin 1 of PORT C (RXd) as input*/
-    VPORTC.DIR |= PIN0_bm;                                  /* set pin 0 of PORT C (TXd) as output*/
+    VPORTA.DIR &= ~PIN1_bm;                                 /* set pin 1 of PORT A (RXd) as input*/
+    VPORTA.DIR |= PIN0_bm;                                  /* set pin 0 of PORT C (TXd) as output*/
 
-    USART1.BAUD = (uint16_t)(USART1_BAUD_RATE(9600));       /* set the baud rate*/
-    USART1.CTRLC = USART_CHSIZE0_bm | USART_CHSIZE1_bm;     /* set the data format to 8-bit*/
-    USART1.CTRLB |= (USART_TXEN_bm | USART_RXEN_bm);        /* enable transmitter*/
+    //set baud rate register
+    USART0.BAUD = (uint16_t)USART0_BAUD_RATE(UART_BAUD_RATE);
+	
+    //RXCIE enabled; TXCIE enabled; DREIE disabled; RXSIE enabled; LBME disabled; ABEIE disabled; RS485 DISABLE; 
+    USART0.CTRLA = 0xD0;
+	
+    //RXEN enabled; TXEN enabled; SFDEN disabled; ODME disabled; RXMODE NORMAL; MPCM disabled; 
+    USART0.CTRLB = 0xC0;
+	
+    //CMODE ASYNCHRONOUS; PMODE Disabled; SBMODE 1BIT; CHSIZE 8BIT; UDORD disabled; UCPHA disabled; 
+    USART0.CTRLC = 0x03;
+	
+    //DBGCTRL_DBGRUN
+    USART0.DBGCTRL = 0x00;
+	
+    //EVCTRL_IREI
+    USART0.EVCTRL = 0x00;
+	
+    //RXPLCTRL_RXPL
+    USART0.RXPLCTRL = 0x00;
+	
+    //TXPLCTRL_TXPL
+    USART0.TXPLCTRL = 0x00;
  
  }
 
 static uint8_t USART_read(void)
 {
     /* Poll for data received */
-    while (!(USART1.STATUS & USART_RXCIF_bm))
+    while (!(USART0.STATUS & USART_RXCIF_bm))
     {
         ;
     }  
       
-    return USART1.RXDATAL;
+    return USART0.RXDATAL;
 }
 
 static void USART_write(uint8_t byte)
 {
-    while (!(USART1.STATUS & USART_DREIF_bm))
+    while (!(USART0.STATUS & USART_DREIF_bm))
     {
         ;
     } 
-           
+    RS485_TXEN_set();       
     /* Data will be sent when TXDATA is written */
-    USART1.TXDATAL = byte;
+    USART0.TXDATAL = byte;
+    while (!(USART0.STATUS & USART_TXCIF_bm))
+    {
+        ;
+    }
+    RS485_TXEN_clear();
+    USART0.STATUS |= (USART_TXCIF_bm);
 }
 
 /*
@@ -297,30 +329,48 @@ static void USART_write(uint8_t byte)
  */
 static inline void STATUS_LED_init(void)
 {
-    /* Set LED0 (PC6) as output */
-    VPORTC.DIR |= PIN6_bm;
+    /* Set LED0 (PF2) as output */
+    VPORTF.DIR |= PIN2_bm;
 }
 
 static inline void STATUS_LED_toggle(void)
 {
-    /* Toggle LED0 (PC6) */
-    VPORTC.OUT ^= PIN6_bm;
+    /* Toggle LED0 (PF2) */
+    VPORTF.OUT ^= PIN2_bm;
 }
 
 static inline void STATUS_LED_set(void)
 {
-    /* Toggle LED0 (PC6) */
-    VPORTC.OUT |=  PIN6_bm;
+    /* Toggle LED0 (PF2) */
+    VPORTF.OUT |=  PIN2_bm;
 }
 
 static inline void STATUS_LED_clear(void)
 {
-    /* Toggle LED0 (PC6) */
-    VPORTC.OUT &=  ~PIN6_bm;
+    /* Toggle LED0 (PF2) */
+    VPORTF.OUT &=  ~PIN2_bm;
 }
 
 static uint8_t BUTTON_read(void)
 {
-    /* Read value on SW0 (PC7) */
-    return (!(VPORTC.IN & PIN7_bm));
+    /* Read value on BLEN (PF4) */
+    return (!(VPORTF.IN & PIN4_bm));
+}
+
+static inline void RS485_TXEN_init(void)
+{
+    /* Set TXEN (PA3) as output */
+    VPORTA.DIR |= PIN3_bm;
+}
+
+static inline void RS485_TXEN_set(void)
+{
+    /* Set TXEN (PA3) */
+    VPORTA.OUT |=  PIN3_bm;
+}
+
+static inline void RS485_TXEN_clear(void)
+{
+    /* Clear TXEN (PA3) */
+    VPORTA.OUT &=  ~PIN3_bm;
 }

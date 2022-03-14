@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include <avr/io.h> 
 
-#define BOOTSIZE_FUSE               (0x02)
+#define BOOTSIZE_FUSE               (0x20) //16K flash size for bootloader
 #define BOOT_SIZE                   (BOOTSIZE_FUSE * PROGMEM_PAGE_SIZE)
 #define APPCODE_START               BOOT_SIZE
 

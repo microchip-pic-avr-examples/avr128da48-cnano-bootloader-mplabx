@@ -4,3 +4,14 @@
 /*/nbproject/*.properties
 /*/nbproject/*.mk
 /*/nbproject/*.bash
+avr128da48-cnano-avr-da-bootloader.X/.generated_files/**
+avr128da48-cnano-avr-da-host-app.X/.generated_files/**
+
+*.o
+*.d
+*.eep
+*.elf
+*.hex
+*.lss
+*.map
+*.srec
