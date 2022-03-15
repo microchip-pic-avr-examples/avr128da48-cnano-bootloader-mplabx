@@ -23,7 +23,7 @@
  */
 
 #define F_CPU                           (4000000UL)         /* using clock 4MHz*/
-#define UART_BAUD_RATE					(19200UL)
+#define UART_BAUD_RATE					(115200UL)
 #define USART0_BAUD_RATE(BAUD_RATE)     ((float)(64 * F_CPU / (16 * (float)BAUD_RATE)) + 0.5)
 
 #include <avr/io.h>
@@ -122,8 +122,8 @@ __attribute__((naked)) __attribute__((section(".ctors"))) void boot(void)
 
 void bootloader(void)
 {
-     uint16_t data_word = 0;
-
+    uint16_t data_word = 0;
+    volatile uint16_t cksum = 0u;
     /* Initialize communication interface */
     INTERFACE_init();
     RS485_TXEN_init();
@@ -246,7 +246,14 @@ void bootloader(void)
                 }            
             break;
             
-            case SOFTWARE_RESET: 
+            case SOFTWARE_RESET:
+                /*Read back the image and add the bytes for a 16 bit checksum*/
+                for(uint32_t i = image_info.start_address; i < (image_info.start_address + image_info.memory_size); i++)
+                {
+                    cksum += pgm_read_byte_far(i);
+                }
+                INTERFACE_writeByte((cksum >> 8u) & 0xFF);
+                INTERFACE_writeByte(cksum & 0xFF);
                 _delay_ms(50);
                 /* Software reset after download */
                 _PROTECTED_WRITE(RSTCTRL.SWRR, RSTCTRL_SWRST_bm);

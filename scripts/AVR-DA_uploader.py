@@ -75,7 +75,7 @@ import add_image_info
 add_image_info.addInfo(file,flashsize,VersionMax,VersionMin)
 
 # Init serial communication
-uart = Serial(comport, baudrate=baudrate, timeout=1)
+uart = Serial(comport, baudrate=baudrate, timeout=10)
 print("\n",uart)
 uart.reset_input_buffer()
 
@@ -88,7 +88,7 @@ failed = 0
 counter = 0
 
 print ("\n","Uploading", size, "bytes...")
-
+cksum = 0
 #send firmware  bin file
 with open(bin_file, "rb") as f:
 	while counter<size:
@@ -99,6 +99,8 @@ with open(bin_file, "rb") as f:
 		if (tmp_byte != byte):
 			failed = 1
 			break
+		if(counter >= 132):
+			cksum += int(tmp_byte.hex(), 16)
 		counter += 1
 		print ("\r%.02f%%" % (float(counter)/size*100), end='')
 
@@ -112,7 +114,10 @@ if failed:
 	print ("Value %#04x echoed, expected %#04x" % (tmp_byte, byte))
 	sys.exit(0)
 else:
+    cksumdev = uart.read(2)
     print ("\nFirmware upload OK")
+    print ("\r\nCalculated checksum " + str(hex(cksum & 0xFFFF)))
+    print ("\r\nRead checksum " + str(cksumdev.hex()))
 
 sys.exit(1);
 

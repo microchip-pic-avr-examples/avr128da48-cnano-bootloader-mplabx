@@ -124,18 +124,18 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/boot.o: boot.c  .generated_files/52688f4a71e47f09ab6c595eca56a93bc2b770e7.flag .generated_files/499d67f7b5acbe8a8ce3e6f0b0d91dfb6ecc2c12.flag
+${OBJECTDIR}/boot.o: boot.c  .generated_files/3457c071414ce6dfbd098595533198113c87b464.flag .generated_files/499d67f7b5acbe8a8ce3e6f0b0d91dfb6ecc2c12.flag
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/boot.o.d 
 	@${RM} ${OBJECTDIR}/boot.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=avr128da32 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -DNDEBUG -Wall -MD -MP -MF "${OBJECTDIR}/boot.o.d" -MT "${OBJECTDIR}/boot.o.d" -MT ${OBJECTDIR}/boot.o  -o ${OBJECTDIR}/boot.o boot.c  -DXPRJ_Release=$(CND_CONF)  $(COMPARISON_BUILD) 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=avr128da32 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -DNDEBUG -Wall -MD -MP -MF "${OBJECTDIR}/boot.o.d" -MT "${OBJECTDIR}/boot.o.d" -MT ${OBJECTDIR}/boot.o  -o ${OBJECTDIR}/boot.o boot.c  -DXPRJ_Release=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 else
-${OBJECTDIR}/boot.o: boot.c  .generated_files/d8682f17f2477f969f329810465270903f1b2554.flag .generated_files/499d67f7b5acbe8a8ce3e6f0b0d91dfb6ecc2c12.flag
+${OBJECTDIR}/boot.o: boot.c  .generated_files/d285991d1631e5be4e0cce71a38faa25e34f2b79.flag .generated_files/499d67f7b5acbe8a8ce3e6f0b0d91dfb6ecc2c12.flag
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/boot.o.d 
 	@${RM} ${OBJECTDIR}/boot.o 
-	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=avr128da32 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -DNDEBUG -Wall -MD -MP -MF "${OBJECTDIR}/boot.o.d" -MT "${OBJECTDIR}/boot.o.d" -MT ${OBJECTDIR}/boot.o  -o ${OBJECTDIR}/boot.o boot.c  -DXPRJ_Release=$(CND_CONF)  $(COMPARISON_BUILD) 
+	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=avr128da32 ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS}  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O3 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -DNDEBUG -Wall -MD -MP -MF "${OBJECTDIR}/boot.o.d" -MT "${OBJECTDIR}/boot.o.d" -MT ${OBJECTDIR}/boot.o  -o ${OBJECTDIR}/boot.o boot.c  -DXPRJ_Release=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 endif
 
