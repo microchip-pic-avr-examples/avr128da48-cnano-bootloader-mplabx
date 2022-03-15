@@ -117,7 +117,7 @@ else:
     cksumdev = uart.read(2)
     print ("\nFirmware upload OK")
     print ("\r\nCalculated checksum " + str(hex(cksum & 0xFFFF)))
-    print ("\r\nRead checksum " + str(cksumdev.hex()))
+    print ("\r\nRead checksum 0x" + str(cksumdev.hex()))
 
 sys.exit(1);
 
